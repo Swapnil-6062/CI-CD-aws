@@ -14,8 +14,8 @@ jobs:
 
       - name: "Verify Node.js and npm"
         run: |
-          node -v || exit 1
-          npm -v || exit 1
+          node -v
+          npm -v
 
       - name: "Checkout code"
         uses: actions/checkout@v2
@@ -30,7 +30,8 @@ jobs:
         run: npm install --legacy-peer-deps
 
       - name: "Run the tests"
-        run: npm test || echo "Tests failed but continuing..."
+        run: |
+          npm test || echo "Tests failed but continuing..."
 
       - name: "Install PM2"
         run: npm install -g pm2
