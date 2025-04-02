@@ -26,9 +26,9 @@ jobs:
 
       - name: "Check if PM2 process is running"
         run: |
-          if ! pm2 describe server > /dev/null; then
+          if ! pm2 list | grep -q server; then
             pm2 start server.js --name server
           fi
 
       - name: "Restart Server"
-        run: pm2 restart server
+        run: pm2 restart server || pm2 start server.js --name server
