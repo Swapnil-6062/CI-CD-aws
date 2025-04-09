@@ -1,52 +1,28 @@
 name: "Deploy to AWS"
 
 on: 
-  workflow_dispatch
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: self-hosted
+
     steps:
       - name: "Setup Node.js"
         uses: actions/setup-node@v4
         with:
           node-version: "21"
 
-      - name: "Verify Node.js and npm"
-        run: |
-          node -v
-          npm -v
-
       - name: "Checkout code"
         uses: actions/checkout@v2
 
-      - name: "Check if package.json exists"
-        run: test -f package.json && echo "package.json found" || exit 1
-
-      - name: "Fix npm permissions"
-        run: sudo chown -R $(whoami) ~/.npm
-
       - name: "Install dependencies"
-        run: npm install --legacy-peer-deps
-
-      - name: "Run the tests"
-        run: |
-          npm test || echo "Tests failed but continuing..."
+        run: npm install 
 
       - name: "Install PM2"
-        run: npm install -g pm2
+        run: npm install pm2 -g
 
-      - name: "Verify PM2 installation"
-        run: pm2 -v
+      - name: "Run the tests"
+        run: npm test
 
-      - name: "Verify server.js exists"
-        run: test -f server.js && echo "server.js found" || exit 1
-
-      - name: "Check if PM2 process is running"
-        run: |
-          if ! pm2 list | grep -q server; then
-            pm2 start server.js --name server
-          fi
-
-      - name: "Restart Server"
-        run: pm2 restart server || pm2 start server.js --name server
+      
